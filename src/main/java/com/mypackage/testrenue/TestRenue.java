@@ -7,6 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class TestRenue {
@@ -18,9 +19,7 @@ public class TestRenue {
         if (getColumnNumber(args)) return; //получение номера столбца из аргумента запуска или из файла,
         // а так же проверка, получен ли номер столбца
 
-        HashMap<String,String> data = readFile(); //преобраззование BufferedReader в HashMap c ключем по полученному столбцу
-
-        Indicators indicators = new Indicators();
+        Map<String,String> data = readFile(); //преобраззование BufferedReader в HashMap c ключем по полученному столбцу
 
         while (true) {
             //получение строки для поиска из консоли
@@ -32,7 +31,7 @@ public class TestRenue {
                 break;
 
             long start = System.currentTimeMillis();
-            ArrayList<String> arrayList = searchStrings(searchString, data); //поиск строк, начинающихся с searchString
+            List<String> arrayList = searchStrings(searchString, data); //поиск строк, начинающихся с searchString
             long finish = System.currentTimeMillis();
 
             //вывод найденных строк
@@ -40,15 +39,16 @@ public class TestRenue {
                 System.out.println(s);
             }
 
-            indicators.getSize(arrayList); //вывод в консоль количесвта найденных строк
-            indicators.getTime(start, finish); //вывод в консоль затраченного времени на поиск
+            Indicators indicators = new Indicators(arrayList, start, finish);
+            indicators.getSize(); //вывод в консоль количесвта найденных строк
+            indicators.getTime(); //вывод в консоль затраченного времени на поиск
             indicators.getMemory(); //вывод объема использованного приложением хипа
         }
 
     }
 
-    private static ArrayList<String> searchStrings(String searchString, HashMap<String, String> data) {
-        ArrayList<String> arrayList = new ArrayList<>();
+    private static List<String> searchStrings(String searchString, Map<String, String> data) {
+        List<String> arrayList = new ArrayList<>();
         data
                 .entrySet()
                 .stream()
@@ -77,8 +77,8 @@ public class TestRenue {
         return false;
     }
 
-    private static HashMap<String, String> readFile () throws IOException {
-        HashMap<String, String> result = new HashMap<>();
+    private static Map<String, String> readFile () throws IOException {
+        Map<String, String> result = new HashMap<>();
         String line;
         StringBuilder stringBuilder;
         String[] values;

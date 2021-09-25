@@ -2,14 +2,24 @@ package com.mypackage.testrenue;
 
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
-import java.util.ArrayList;
+import java.util.List;
 
 public class Indicators {
-    public void getSize (ArrayList<String> arrayList) {
+    private final List<String> arrayList;
+    private final long start;
+    private final long finish;
+
+    public Indicators(List<String> arrayList, long start, long finish) {
+        this.arrayList = arrayList;
+        this.start = start;
+        this.finish = finish;
+    }
+
+    public void getSize () {
         System.out.print("Количество найденных строк: " + arrayList.size() + ". ");
     }
 
-    public void getTime (long start, long finish) {
+    public void getTime () {
         System.out.println("Время, затраченное на поиск: " + (finish - start) + " мс.");
     }
 

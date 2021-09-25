@@ -3,7 +3,7 @@ package com.mypackage.testrenue;
 import static java.lang.String.format;
 
 public final class Configuration {
-    private int columnNumber;
+    public int columnNumber;
 
     public int getColumnNumbers() {
         return columnNumber;
