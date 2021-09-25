@@ -3,8 +3,6 @@ package com.mypackage.testrenue;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.*;
-import java.lang.management.ManagementFactory;
-import java.lang.management.MemoryMXBean;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -21,6 +19,8 @@ public class TestRenue {
         // а так же проверка, получен ли номер столбца
 
         HashMap<String,String> data = readFile(); //преобраззование BufferedReader в HashMap c ключем по полученному столбцу
+
+        Indicators indicators = new Indicators();
 
         while (true) {
             //получение строки для поиска из консоли
@@ -40,12 +40,9 @@ public class TestRenue {
                 System.out.println(s);
             }
 
-            System.out.println("Количество найденных строк: " + arrayList.size() + ". Время, затраченное на поиск: " +
-                    (finish - start) + " мс.");
-
-            MemoryMXBean memoryMXBean = ManagementFactory.getMemoryMXBean();
-            System.out.println("Использовано " + memoryMXBean.getHeapMemoryUsage().getUsed() / 1048576 +
-                    " МБ хипа для работы приложения.");
+            indicators.getSize(arrayList); //вывод в консоль количесвта найденных строк
+            indicators.getTime(start, finish); //вывод в консоль затраченного времени на поиск
+            indicators.getMemory(); //вывод объема использованного приложением хипа
         }
 
     }
@@ -82,12 +79,12 @@ public class TestRenue {
 
     private static HashMap<String, String> readFile () throws IOException {
         HashMap<String, String> result = new HashMap<>();
-        BufferedReader bufferedReader = getDataFile(); //получение BufferedReader из файла с данными
         String line;
         StringBuilder stringBuilder;
         String[] values;
-        while ((line = bufferedReader.readLine()) != null) {
-            values = line.replace("\"","").split(",");
+        try (BufferedReader bufferedReader = getDataFile()) { //получение BufferedReader из файла с данными
+            while ((line = bufferedReader.readLine()) != null) {
+                values = line.replace("\"","").split(","); //парсинг строки
                 stringBuilder = new StringBuilder();
                 for (int i = 0; i < values.length; i++) {
                     if (i != columnNumbers - 1) {
@@ -98,8 +95,8 @@ public class TestRenue {
                     }
                 }
                 result.put(values[columnNumbers - 1], stringBuilder.toString());
+            }
         }
-        bufferedReader.close();
         return result;
     }
 
